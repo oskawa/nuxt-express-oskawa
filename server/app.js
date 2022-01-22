@@ -4,27 +4,38 @@ const server = require('http').createServer(app)
 express.json()
 express.urlencoded({extended: true})
 
-// const options = {
-//   cors: {
-//     origin: "http://localhost:3000",
-//     credentials: true
-//   }
-// };
-// const io = require('socket.io')(server, options)
+const options = {
+  cors: {
+    origin: '*',
+    // credentials: true
+  }
+};
+const io = require('socket.io')(server, options)
 
-const io = require('socket.io')(server)
-
-io.on('connect', socket => {
+// const io = require('socket.io')(server)
 
 
-  console.log('IO connected')
-  socket.on('destroy', () => {
-    console.log('destroyed')
+let users = []
+
+io.on("connect", (socket) => {
+  users.push(socket.id)
+  socket.emit("checkIfUsers", {users, socket:socket.id});
+  socket.broadcast.emit("otherConnected", socket.id);
+
+
+  socket.on("direction", function (x, z, id) {
+    socket.broadcast.emit("updateDirection", { 'socketId': socket.id, 'x': x, 'z': z, 'id': id })
   })
-  socket.on('hello', () => {
-    console.log('hello')
+
+  socket.on("disconnect", (reason) => {
+    socket.broadcast.emit("disconnected", socket.id);
+    const index = users.indexOf(socket.id);
+    if (index > -1) {
+      users.splice(index, 1);
+    }
+
   })
-})
+});
 
 module.exports = {
   app, server
