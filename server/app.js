@@ -6,13 +6,13 @@ express.urlencoded({extended: true})
 
 const options = {
   cors: {
-    origin: '*',
-    // credentials: true
+    origin: "https://virtual-visite.herokuapp.com",
+    credentials: true
   }
 };
 const io = require('socket.io')(server, options)
 
-// const io = require('socket.io')(server)
+const io = require('socket.io')(server)
 
 
 let users = []

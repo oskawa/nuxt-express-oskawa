@@ -55,7 +55,7 @@ export default {
     sockets: [{
       default:true,
       name:'main',
-      url: 'https://virtual-visite.herokuapp.com/'
+      url: 'https://virtual-visite.herokuapp.com'
     }]
   },
   pwa: {
